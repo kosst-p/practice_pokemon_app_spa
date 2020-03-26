@@ -1,0 +1,28 @@
+.PokemonCard {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #efefefc9;
+  font-family: "pokemon-font";
+  border-radius: 15px;
+}
+
+.PokemonCard button {
+  padding: 20px 10px;
+  font-size: 12px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ffffff;
+  color: red;
+
+  background: linear-gradient(45deg, red 50%, white 0%);
+  background-size: 300% 100%;
+  background-position: right bottom;
+  cursor: pointer;
+  transition: all ease 0.8s;
+  outline: none;
+}
+
+.PokemonCard button:hover {
+  background-position: left bottom;
+  color: white;
+}

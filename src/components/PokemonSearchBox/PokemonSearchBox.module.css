@@ -1,0 +1,12 @@
+.PokemonSearchBox {
+  margin-bottom: 20px;
+  outline: none;
+  padding: 10px;
+  font-family: "pokemon-font", monospace;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .PokemonSearchBox {
+    width: 100%;
+  }
+}

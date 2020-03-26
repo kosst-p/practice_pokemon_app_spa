@@ -1,0 +1,7 @@
+.wrapper {
+  background-image: url(../../img/pokemonbg.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  height: 10000px;
+}
