@@ -1,8 +1,4 @@
-.PokemonCardContainer {
-  padding: 10px;
-}
-
-.Empty {
+.ErrorConnect {
   font-size: 20px;
   color: rgb(255, 187, 0);
   font-family: "pokemon-font";

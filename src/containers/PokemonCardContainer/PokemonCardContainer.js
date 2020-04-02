@@ -1,58 +1,75 @@
 import React, { useState, useEffect } from "react";
 import classes from "./PokemonCardContainer.module.css";
 import PokemonCard from "../../components/PokemonCard/PokemonCard";
-import Loading from "../../components/Loading/Loading";
+import Loader from "../../components/Loader/Loader";
 import Axios from "axios";
 import PokemonSearchBox from "../../components/PokemonSearchBox/PokemonSearchBox";
+import logger from "react-logger";
+import Pokemon from "../../components/Pokemon/Pokemon";
 
 const PokemonCardContainer = () => {
-  const urlPokemonsApi = "https://pokeapi.co/api/v2/pokemon?limit=10"; // ?limit=964
-  const [pokemons, setPokemons] = useState([]); // установка начального состояния для типа
-  const [search, setSearch] = useState(""); // установка начального состояния для поиска
-  // const [isConnect, setIsConnect] = useState(false);
-
-  console.log(pokemons);
+  const [pokemons, setPokemons] = useState([]); //состояние для покемонов
+  const [search, setSearch] = useState(""); // состояние для поиска
+  const [pokemonsInList, setPokemonsInList] = useState(30); // состояние количества покемонов в списке
+  const [loading, setLoading] = useState(true); // начальное состояние загрузки покемонов
+  const [error, setError] = useState(false); // начальное состояние ошибки
+  const urlPokemonsAPI = `https://pokeapi.co/api/v2/pokemon?limit=${pokemonsInList}`; // ?limit=964
 
   useEffect(() => {
+    setError(false);
+
     const fetchData = async () => {
-      await Axios.get(urlPokemonsApi).then(result =>
-        setPokemons(result.data["results"])
-      );
+      await Axios.get(urlPokemonsAPI)
+        .then(result => {
+          setPokemons(result.data["results"]);
+          setLoading(false);
+        })
+        .catch(error => {
+          setError(true);
+          console.log(error);
+        });
     };
     fetchData();
-  }, []);
+  }, [urlPokemonsAPI]);
 
   const handleSearch = e => {
     setSearch(e.target.value);
   };
 
-  const filteredPokemons = pokemons
-    .filter(pokemon =>
-      pokemon.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .map((pokemon, index) => (
-      <PokemonCard
-        key={index}
-        pokemonName={pokemon.name}
-        pokemonURL={pokemon.url}
-      />
-    ));
+  /* фильтр массива + выборка элемента*/
+  // const filteredPokemons = pokemons
+  //   .filter(pokemon =>
+  //     pokemon.name.toLowerCase().includes(search.toLowerCase())
+  //   )
+  //   .map((pokemon, index) => (
+  //     <PokemonCard
+  //       key={index}
+  //       pokemonName={pokemon.name}
+  //       pokemonURL={pokemon.url}
+  //     />
+  //   ));
+
+  const mappedPokemons = pokemons.map((pokemon, index) => (
+    <PokemonCard
+      key={index}
+      pokemonName={pokemon.name}
+      pokemonURL={pokemon.url}
+      loading={loading}
+    />
+  ));
 
   return (
-    <div className="container">
-      <div className={classes.PokemonCardContainer}>
-        <PokemonSearchBox value={search} handleSearch={handleSearch} />
-        {filteredPokemons.length !== 0 ? (
-          filteredPokemons
-        ) : (
-          <h1
-            className={`${classes.Empty} col-12 d-flex justify-content-center`}
-          >
-            Empty
-          </h1>
-        )}
+    <>
+      <PokemonSearchBox value={search} handleSearch={handleSearch} />
+      <div className=" d-flex justify-content-center">
+        {error ? (
+          <h1 className={classes.ErrorConnect}>Could not connect to server</h1>
+        ) : loading ? (
+          <Loader />
+        ) : null}
       </div>
-    </div>
+      {mappedPokemons.length ? mappedPokemons : null}
+    </>
   );
 };
 

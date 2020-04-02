@@ -6,14 +6,14 @@
   border-radius: 15px;
 }
 
-.PokemonCard button {
+.Button {
   padding: 20px 10px;
   font-size: 12px;
   border-radius: 5px;
   border: none;
   background-color: #ffffff;
   color: red;
-
+  text-decoration: none;
   background: linear-gradient(45deg, red 50%, white 0%);
   background-size: 300% 100%;
   background-position: right bottom;
@@ -22,7 +22,8 @@
   outline: none;
 }
 
-.PokemonCard button:hover {
+.Button:hover {
   background-position: left bottom;
   color: white;
+  text-decoration: none;
 }
