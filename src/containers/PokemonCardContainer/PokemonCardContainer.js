@@ -17,7 +17,6 @@ const PokemonCardContainer = () => {
 
   useEffect(() => {
     setError(false);
-
     const fetchData = async () => {
       await Axios.get(urlPokemonsAPI)
         .then(result => {

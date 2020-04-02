@@ -26,8 +26,10 @@ const PokemonCard = props => {
             alt={pokemonName}
           />
         </div>
-        <div>{/* <button>{pokemonName}, I Choose You!</button> */}</div>
-        <Link className={classes.Button} to={`pokemon/${pokemonName}/`}>
+        <Link
+          className={classes.Button}
+          to={`pokemon/${pokemonName ? pokemonName : null}`}
+        >
           {pokemonName}, I Choose You!
         </Link>
       </div>

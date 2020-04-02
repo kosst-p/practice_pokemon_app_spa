@@ -32,86 +32,95 @@ const Pokemon = props => {
 
   const pokemonNameForAPI = props.match.params.pokemonName.toLowerCase();
   const urlPokemonAPI = `https://pokeapi.co/api/v2/pokemon/${pokemonNameForAPI}/`;
-  const urlPokemonSpecies = `https://pokeapi.co/api/v2/pokemon-species/${pokemonNameForAPI}/`;
+  const urlPokemonSpeciesAPI = `https://pokeapi.co/api/v2/pokemon-species/${pokemonNameForAPI}/`;
 
   useEffect(() => {
     const fetchData = async () => {
-      await Axios({
-        method: "GET",
-        url: urlPokemonAPI
-      })
-        .then(result => {
-          const pokemonResponse = result.data;
-          /* Pokemon Information */
-          const img = pokemonResponse.sprites.front_default;
-          const name = pokemonResponse.name;
-          const weight = Math.round(pokemonResponse.weight / 10);
-          const height = pokemonResponse.height / 10;
-          const types = pokemonResponse.types.map(type => type.type.name);
-          const abilities = pokemonResponse.abilities.map(
-            ability => ability.ability.name
-          );
-          const moveList = pokemonResponse.moves.map(move => move.move.name);
-          let stats = {};
-          pokemonResponse.stats.map(stat => {
-            stats[stat.stat.name] = stat.base_stat; // add keys: speed, special-defense, special-attack, attack, hp
+      try {
+        const resultPokemonAPI = await Axios.get(urlPokemonAPI);
+        const dataPokemonAPI = resultPokemonAPI.data;
+        const resultPokemonSpeciesAPI = await Axios.get(urlPokemonSpeciesAPI);
+        const dataPokemonSpeciesAPI = resultPokemonSpeciesAPI.data;
+        console.log(
+          "dataPokemonAPI: ",
+          dataPokemonAPI,
+          "dataPokemonSpeciesAPI: ",
+          dataPokemonSpeciesAPI
+        );
+
+        /* Pokemon Information */
+        const img = dataPokemonAPI.sprites.front_default;
+        const name = dataPokemonAPI.name;
+        const weight = Math.round(dataPokemonAPI.weight / 10); // hectograms->kilogram
+        const height = dataPokemonAPI.height / 10; // decimeters->meters
+        function getDescription(data) {
+          let result = "";
+          data.flavor_text_entries.forEach(flavor => {
+            if (flavor.language.name === "en") {
+              result = flavor.flavor_text;
+            }
           });
-          setPokemon(prev => {
-            return {
-              ...prev,
-              img: img,
-              name: name,
-              weight: weight,
-              types: types,
-              abilities: abilities,
-              moveList: moveList,
-              height: height,
-              stats: stats
-            };
+          return result;
+        }
+        const description = getDescription(dataPokemonSpeciesAPI);
+        function getGenus(data) {
+          let result = "";
+          data.genera.forEach(genera => {
+            if (genera.language.name === "en") {
+              result = genera.genus;
+            }
           });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      await Axios({
-        method: "GET",
-        url: urlPokemonSpecies
-      }).then(result => {
-        let description = "";
-        result.data.flavor_text_entries.forEach(flavor => {
-          if (flavor.language.name === "en") {
-            description = flavor.flavor_text;
-          }
-        });
-        let genus = "";
-        result.data.genera.forEach(genera => {
-          if (genera.language.name === "en") {
-            genus = genera.genus;
-          }
-        });
-        const evolutionURL = result.data.evolution_chain.url;
-        const eggGroups = result.data.egg_groups.map(
+          return result;
+        }
+        const genus = getGenus(dataPokemonSpeciesAPI);
+        const types = dataPokemonAPI.types.map(type => type.type.name);
+        const abilities = dataPokemonAPI.abilities.map(
+          ability => ability.ability.name
+        );
+        const moveList = dataPokemonAPI.moves.map(move => move.move.name);
+        function getStats(data) {
+          const result = {};
+          data.stats.map(stat => {
+            result[stat.stat.name] = stat.base_stat; // add keys: speed, special-defense, special-attack, attack, hp
+          });
+          return result;
+        }
+        const stats = getStats(dataPokemonAPI);
+        const eggGroups = dataPokemonSpeciesAPI.egg_groups.map(
           egg_group => egg_group.name
         );
         const chanceToCatch = Math.round(
-          (result.data.capture_rate * 100) / 255
+          (dataPokemonSpeciesAPI.capture_rate * 100) / 255 // 255/100=dataPokemonSpeciesAPI.capture_rate/x
         );
+        const evolutionURL = dataPokemonSpeciesAPI.evolution_chain.url;
+        /* ****** */
+
+        /* update State */
         setPokemon(prev => {
           return {
             ...prev,
+            img: img,
+            name: name,
+            weight: weight,
+            height: height,
             description: description,
             genus: genus,
+            types: types,
+            abilities: abilities,
+            moveList: moveList,
+            eggGroups: eggGroups,
+            stats: stats,
             chanceToCatch: chanceToCatch,
-            evolutionURL: evolutionURL,
-            eggGroups: eggGroups
+            evolutionURL: evolutionURL
           };
         });
-      });
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
-    window.scrollTo(0, 0);
-  }, [urlPokemonAPI, urlPokemonSpecies]);
-
+  }, [urlPokemonAPI, urlPokemonSpeciesAPI]);
+  console.log(pokemon);
   return (
     <div>
       <div>
