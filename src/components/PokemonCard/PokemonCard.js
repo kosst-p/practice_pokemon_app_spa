@@ -3,7 +3,7 @@ import classes from "./PokemonCard.module.css";
 import Loader from "../Loader/Loader";
 import { Link } from "react-router-dom";
 
-const PokemonCard = props => {
+const PokemonCard = (props) => {
   const [imageLoading, setImageLoading] = useState(true); // начальное состояние загрузки картинки
 
   const pokemonNumber = props.pokemonURL.split("/")[
@@ -14,7 +14,7 @@ const PokemonCard = props => {
     props.pokemonName.charAt(0).toUpperCase() + props.pokemonName.substring(1);
 
   return (
-    <div className={`${classes.PokemonCard}`}>
+    <div ref={props.forwardRef} className={`${classes.PokemonCard}`}>
       <div className="justify-content-between d-flex align-items-center flex-column flex-md-row">
         <div>{pokemonNumber}.&nbsp;</div>
         <div className={classes.test}>{pokemonName}</div>

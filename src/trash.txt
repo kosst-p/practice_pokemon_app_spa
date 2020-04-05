@@ -1,0 +1,14 @@
+  /* фильтр массива + выборка элемента*/
+  // const filteredPokemons = pokemons
+  //   .filter(pokemon =>
+  //     pokemon.name.toLowerCase().includes(search.toLowerCase())
+  //   )
+  //   .map((pokemon, index) => (
+  //     <PokemonCard
+  //       key={index}
+  //       pokemonName={pokemon.name}
+  //       pokemonURL={pokemon.url}
+  //     />
+  //   ));
+
+  if (pokemons.length === index + 1) {
