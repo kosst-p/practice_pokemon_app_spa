@@ -27,6 +27,7 @@ const PokemonCard = (props) => {
           />
         </div>
         <Link
+          onClick={props.getScrollPosition}
           className={classes.Button}
           to={`pokemon/${pokemonName ? pokemonName : null}`}
         >

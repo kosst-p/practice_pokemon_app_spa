@@ -1,90 +1,74 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./PokemonCardContainer.module.css";
 import PokemonCard from "../../components/PokemonCard/PokemonCard";
 import Loader from "../../components/Loader/Loader";
-import Axios from "axios";
 import PokemonSearchBox from "../../components/PokemonSearchBox/PokemonSearchBox";
 // import logger from "react-logger";
 
-const PokemonCardContainer = () => {
-  /* States */
-  const [pokemons, setPokemons] = useState([]); // состояние для покемонов
-  const [search, setSearch] = useState(""); // состояние для поиска
-  const [loading, setLoading] = useState(true); // начальное состояние загрузки покемонов
-  const [error, setError] = useState(false); // начальное состояние ошибки
-  const [currentPage, setCurrentPage] = useState(
-    "https://pokeapi.co/api/v2/pokemon"
-  );
-  const [nextPage, setNextPage] = useState("");
-  const [hasMore, setHasMore] = useState(false);
+const PokemonCardContainer = (props) => {
+  const [scrolls, setScrolls] = useState([0, 0]);
 
-  /* ******* */
-  const observer = useRef();
-  const lastPokemonElementRef = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setCurrentPage((prevPage) => {
-            return nextPage;
-          });
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [hasMore, loading, nextPage]
-  );
-
-  const handleSearch = (e) => {
-    console.log(e.target.value);
-    setSearch(e.target.value);
+  const getScrollPosition = () => {
+    let cordsAfterClick = [];
+    let cords = ["scrollX", "scrollY"];
+    cords.forEach((cord) => {
+      cordsAfterClick.push(window[cord]);
+    });
+    console.log(cordsAfterClick);
+    setScrolls(cordsAfterClick);
+    console.log(scrolls);
   };
 
-  useEffect(() => {
-    let cancel;
-    const fetchData = () => {
-      setLoading(true);
-      setError(false);
-      Axios({
-        method: "GET",
-        url: currentPage,
-        cancelToken: new Axios.CancelToken((c) => (cancel = c)),
-      })
-        .then((res) => {
-          setPokemons((prevPokemons) => {
-            return [...prevPokemons, ...res.data.results];
-          });
-          setNextPage(res.data.next);
-          setHasMore(res.data.results.length > 0);
-          setLoading(false);
-        })
-        .catch((error) => {
-          if (Axios.isCancel(error)) return;
-          setError(true);
-        });
-    };
-    fetchData();
-    return () => cancel();
-  }, [currentPage, search]);
-
-  const mappedPokemons = pokemons.map((pokemon, index) => (
+  const mappedPokemons = props.pokemons.map((pokemon, index) => (
     <PokemonCard
+      getScrollPosition={getScrollPosition}
       key={index}
       pokemonName={pokemon.name}
       pokemonURL={pokemon.url}
-      loading={loading}
-      forwardRef={pokemons.length === index + 1 ? lastPokemonElementRef : null}
+      loading={props.loading}
+      forwardRef={
+        props.pokemons.length === index + 1 ? props.lastPokemonElementRef : null
+      }
     />
   ));
 
+  /*****/
+  //useEffect(() => getScrollPosition, [getScrollPosition]);
+  // useEffect(() => {
+  //   window.scroll(scrolls[0], scrolls[1]);
+  //   let isMounted = true;
+  //   const fetchData = () => {
+  //     let cords = ["scrollX", "scrollY"];
+  //     window.addEventListener("click", (e) => {
+  //       let res = [];
+  //       cords.forEach((cord) => {
+  //         res.push(window[cord]);
+  //       });
+  //       if (isMounted) {
+  //         setScrolls(() => {
+  //           return res;
+  //         });
+  //       }
+  //     });
+  //   };
+  //   fetchData();
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [scrolls]);
+  //console.log(scrolls);
+  /*****/
+
   return (
     <>
-      <PokemonSearchBox value={search} handleSearch={handleSearch} />
+      <PokemonSearchBox
+        value={props.search}
+        handleSearch={props.handleSearch}
+      />
       <div className=" d-flex justify-content-center">
-        {error ? (
+        {props.error ? (
           <h1 className={classes.ErrorConnect}>Could not connect to server</h1>
-        ) : loading ? (
+        ) : props.loading ? (
           <Loader />
         ) : null}
       </div>

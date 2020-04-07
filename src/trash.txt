@@ -12,3 +12,20 @@
   //   ));
 
   if (pokemons.length === index + 1) {
+
+
+      const [scrolls, setScroll] = useState([0, 0]);
+  console.log(scrolls);
+
+  useEffect(() => {
+    let cords = ["scrollX", "scrollY"];
+    window.addEventListener("unload", (e) => {
+      let res = [];
+      cords.forEach((cord) => {
+        res.push(window[cord]);
+      });
+      //console.log(res);
+      setScroll(res);
+    });
+    window.scroll(scrolls[0], scrolls[1]);
+  }, [scrolls]);
