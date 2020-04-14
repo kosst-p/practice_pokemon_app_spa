@@ -13,7 +13,7 @@
 
   if (pokemons.length === index + 1) {
 
-
+___________________________
       const [scrolls, setScroll] = useState([0, 0]);
   console.log(scrolls);
 
@@ -29,3 +29,4 @@
     });
     window.scroll(scrolls[0], scrolls[1]);
   }, [scrolls]);
+_______________________________________

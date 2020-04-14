@@ -35,6 +35,7 @@ const Pokemon = (props) => {
   const urlPokemonSpeciesAPI = `https://pokeapi.co/api/v2/pokemon-species/${pokemonNameForAPI}/`;
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       try {
         const resultPokemonAPI = await Axios.get(urlPokemonAPI);
@@ -96,29 +97,34 @@ const Pokemon = (props) => {
         /* ****** */
 
         /* update State */
-        setPokemon((prev) => {
-          return {
-            ...prev,
-            img: img,
-            name: name,
-            weight: weight,
-            height: height,
-            description: description,
-            genus: genus,
-            types: types,
-            abilities: abilities,
-            moveList: moveList,
-            eggGroups: eggGroups,
-            stats: stats,
-            chanceToCatch: chanceToCatch,
-            evolutionURL: evolutionURL,
-          };
-        });
+        if (isMounted) {
+          setPokemon((prev) => {
+            return {
+              ...prev,
+              img: img,
+              name: name,
+              weight: weight,
+              height: height,
+              description: description,
+              genus: genus,
+              types: types,
+              abilities: abilities,
+              moveList: moveList,
+              eggGroups: eggGroups,
+              stats: stats,
+              chanceToCatch: chanceToCatch,
+              evolutionURL: evolutionURL,
+            };
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
+    return () => {
+      isMounted = false;
+    };
   }, [urlPokemonAPI, urlPokemonSpeciesAPI]);
   //console.log(pokemon);
   return (

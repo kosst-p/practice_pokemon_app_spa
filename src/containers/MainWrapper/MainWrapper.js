@@ -4,11 +4,11 @@ import Pokemon from "../../components/Pokemon/Pokemon";
 import { Route, Switch } from "react-router-dom";
 import classes from "./MainWrapper.module.css";
 import Axios from "axios";
+// import logger from "react-logger";
 
 const MainWrapper = (props) => {
   /* States */
   const [pokemons, setPokemons] = useState([]); // состояние для покемонов
-  const [search, setSearch] = useState(""); // состояние для поиска
   const [loading, setLoading] = useState(true); // начальное состояние загрузки покемонов
   const [error, setError] = useState(false); // начальное состояние ошибки
   const [currentPage, setCurrentPage] = useState(
@@ -16,8 +16,9 @@ const MainWrapper = (props) => {
   );
   const [nextPage, setNextPage] = useState("");
   const [hasMore, setHasMore] = useState(false);
+  /* ****** */
 
-  /* ******* */
+  /* Logic */
   const observer = useRef();
   const lastPokemonElementRef = useCallback(
     (node) => {
@@ -25,20 +26,13 @@ const MainWrapper = (props) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          setCurrentPage((prevPage) => {
-            return nextPage;
-          });
+          setCurrentPage(nextPage);
         }
       });
       if (node) observer.current.observe(node);
     },
     [hasMore, loading, nextPage]
   );
-
-  const handleSearch = (e) => {
-    console.log(e.target.value);
-    setSearch(e.target.value);
-  };
 
   useEffect(() => {
     let cancel;
@@ -65,8 +59,10 @@ const MainWrapper = (props) => {
     };
     fetchData();
     return () => cancel();
-  }, [currentPage, search]);
+  }, [currentPage]);
+  /* ******* */
 
+  /* Render */
   return (
     <Switch>
       <Route
@@ -75,11 +71,9 @@ const MainWrapper = (props) => {
         render={(props) => (
           <PokemonCardContainer
             pokemons={pokemons}
-            search={search}
             loading={loading}
             error={error}
             lastPokemonElementRef={lastPokemonElementRef}
-            handleSearch={handleSearch}
           />
         )}
       />
@@ -87,6 +81,7 @@ const MainWrapper = (props) => {
       <Route render={() => <h1 className={classes.notFound}> Not Found</h1>} />
     </Switch>
   );
+  /* ***** */
 };
 
 export default MainWrapper;
