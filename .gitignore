@@ -23,6 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # txt
-src/Descriprion.txt
-src/tasks.txt
-src/trash.txt
+/src/Descriprion.txt
+/src/tasks.txt
+/src/trash.txt
