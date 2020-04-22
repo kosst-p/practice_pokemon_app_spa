@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import classes from "./Pokemon.module.css";
 import Axios from "axios";
 import Evolution from "../Evolution/Evolution";
+import Loader from "../Loader/Loader";
 
 const Pokemon = (props) => {
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [showEvolution, setShowEvolution] = useState(false);
   const [pokemon, setPokemon] = useState({
     img: "",
@@ -39,18 +43,12 @@ const Pokemon = (props) => {
     let isMounted = true;
     const fetchData = async () => {
       try {
+        setLoading(true);
         const resultPokemonAPI = await Axios.get(urlPokemonAPI);
         const dataPokemonAPI = resultPokemonAPI.data;
         const resultPokemonSpeciesAPI = await Axios.get(urlPokemonSpeciesAPI);
         const dataPokemonSpeciesAPI = resultPokemonSpeciesAPI.data;
-        // console.log(
-        //   "dataPokemonAPI: ",
-        //   dataPokemonAPI,
-        //   "dataPokemonSpeciesAPI: ",
-        //   dataPokemonSpeciesAPI
-        // );
 
-        /* Pokemon Information */
         const img = dataPokemonAPI.sprites.front_default;
         const name =
           dataPokemonAPI.name.charAt(0).toUpperCase() +
@@ -126,7 +124,9 @@ const Pokemon = (props) => {
             };
           });
         }
+        setLoading(false);
       } catch (error) {
+        setError(true);
         console.log(error);
       }
     };
@@ -139,136 +139,147 @@ const Pokemon = (props) => {
 
   return (
     <div className={classes.MainWrapper}>
-      <div className={classes.ProfileWrapper}>
-        <div className="row d-flex justify-content-between align-content-center align-items-center">
-          <div className="col-xl-3">
-            <div className={classes.PokemonImg}>
-              <img src={pokemon.img} alt={pokemon.name} />
-            </div>
-          </div>
-          <div className="col-xl-9">
-            <div className="d-flex flex-column align-self-center">
-              <div className={classes.TitleProfile}>
-                <h3>Profile</h3>
-              </div>
-              <div className={classes.PokemonName}>
-                <p>
-                  <strong>Name:</strong> {pokemon.name}{" "}
-                </p>
-              </div>
-              <div className={classes.PokemonDescr}>
-                <p>
-                  <strong>Description:</strong> {pokemon.description}
-                </p>
-              </div>
-              <div className={classes.PokemonTypes}>
-                <p>
-                  <strong>Type:</strong> &nbsp;
-                  {pokemon.types.map((type, index) => {
-                    return (
-                      <span
-                        key={index}
-                        className={`${classes.PokemonType} ${classes[type]}`}
-                      >
-                        {type}
-                      </span>
-                    );
-                  })}
-                </p>
-              </div>
-              <div className={classes.PokemonAbil}>
-                <p>
-                  <strong>Abilities:</strong> {pokemon.abilities.join(", ")}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Egg Group:</strong> {pokemon.eggGroups.join(", ")}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Weight:</strong> {pokemon.weight}, kg
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Height:</strong> {pokemon.height}, m
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Genus:</strong> {pokemon.genus}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Chance to Catch:</strong> {pokemon.chanceToCatch}, %
-                </p>
-              </div>
-            </div>
-          </div>
+      {error ? (
+        <h1 className={classes.notFound}>Not Found</h1>
+      ) : loading ? (
+        <div className="d-flex justify-content-center">
+          <Loader />
         </div>
-      </div>
-      <div className={classes.StatsWrapper}>
-        <div className="row">
-          <div className="col-12">
-            <div className={classes.TitleStats}>
-              <h3>Stats</h3>
-              {pokemon.stats.map((statData, index) => {
-                return (
-                  <div key={index} className="row align-items-center">
-                    <div className="col-12 col-xl-3">{statData.name}</div>
-                    <div className="col-12 col-xl-9">
-                      <div className="progress">
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: `${statData.value}%` }}
-                          aria-valuenow="25"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        >
-                          <small>{statData.value}</small>
+      ) : (
+        <>
+          <div className={classes.ProfileWrapper}>
+            <div className="row d-flex justify-content-between align-content-center align-items-center">
+              <div className="col-xl-3">
+                <div className={classes.PokemonImg}>
+                  <img src={pokemon.img} alt={pokemon.name} />
+                </div>
+              </div>
+              <div className="col-xl-9">
+                <div className="d-flex flex-column align-self-center">
+                  <div className={classes.TitleProfile}>
+                    <h3>Profile</h3>
+                  </div>
+                  <div className={classes.PokemonName}>
+                    <p>
+                      <strong>Name:</strong> {pokemon.name}
+                    </p>
+                  </div>
+                  <div className={classes.PokemonDescr}>
+                    <p>
+                      <strong>Description:</strong> {pokemon.description}
+                    </p>
+                  </div>
+                  <div className={classes.PokemonTypes}>
+                    <p>
+                      <strong>Type:</strong> &nbsp;
+                      {pokemon.types.map((type, index) => {
+                        return (
+                          <span
+                            key={index}
+                            className={`${classes.PokemonType} ${classes[type]}`}
+                          >
+                            {type}
+                          </span>
+                        );
+                      })}
+                    </p>
+                  </div>
+                  <div className={classes.PokemonAbil}>
+                    <p>
+                      <strong>Abilities:</strong> {pokemon.abilities.join(", ")}
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Egg Group:</strong> {pokemon.eggGroups.join(", ")}
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Weight:</strong> {pokemon.weight}, kg
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Height:</strong> {pokemon.height}, m
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Genus:</strong> {pokemon.genus}
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Chance to Catch:</strong> {pokemon.chanceToCatch},
+                      %
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={classes.StatsWrapper}>
+            <div className="row">
+              <div className="col-12">
+                <div className={classes.TitleStats}>
+                  <h3>Stats</h3>
+                  {pokemon.stats.map((statData, index) => {
+                    return (
+                      <div key={index} className="row align-items-center">
+                        <div className="col-12 col-xl-3">{statData.name}</div>
+                        <div className="col-12 col-xl-9">
+                          <div className="progress">
+                            <div
+                              className="progress-bar"
+                              role="progressbar"
+                              style={{ width: `${statData.value}%` }}
+                              aria-valuenow="25"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            >
+                              <small>{statData.value}</small>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className={classes.BtnWrapper}>
-        <div className="row">
-          <div className="col-12">
-            <button onClick={handleShowEvolution}>Evolution</button>
-            <button onClick={handleGoToHomePage}>Back</button>
-          </div>
-        </div>
-      </div>
-      <div className={classes.EvolvWrapper}>
-        <div className="row">
-          <div className="col-12">
-            {showEvolution ? (
-              <Evolution evolution={pokemon.evolutionURL} />
-            ) : null}
-          </div>
-        </div>
-      </div>
-      <div className={classes.MovesListWrapper}>
-        <div className="row">
-          <div className="col-12">
-            <div className={`d-flex flex-wrap ${classes.MovesListContent}`}>
-              <h3>Moves list</h3>
-              {pokemon.moveList.map((move, index) => {
-                return <span key={index}>{move} </span>;
-              })}
+          <div className={classes.BtnWrapper}>
+            <div className="row">
+              <div className="col-12">
+                <button onClick={handleShowEvolution}>Evolution</button>
+                <button onClick={handleGoToHomePage}>Back</button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+          <div className={classes.EvolvWrapper}>
+            <div className="row">
+              <div className="col-12">
+                {showEvolution ? (
+                  <Evolution evolution={pokemon.evolutionURL} />
+                ) : null}
+              </div>
+            </div>
+          </div>
+          <div className={classes.MovesListWrapper}>
+            <div className="row">
+              <div className="col-12">
+                <div className={`d-flex flex-wrap ${classes.MovesListContent}`}>
+                  <h3>Moves list</h3>
+                  {pokemon.moveList.map((move, index) => {
+                    return <span key={index}>{move} </span>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

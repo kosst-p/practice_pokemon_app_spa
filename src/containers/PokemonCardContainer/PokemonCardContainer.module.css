@@ -1,10 +1,8 @@
 .Title {
   text-align: center;
-  font-family: "pokemon-font";
   margin-bottom: 40px;
 }
 .ErrorConnect {
   font-size: 20px;
   color: rgb(255, 187, 0);
-  font-family: "pokemon-font";
 }

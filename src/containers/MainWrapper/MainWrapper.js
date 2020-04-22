@@ -77,7 +77,7 @@ const MainWrapper = (props) => {
           />
         )}
       />
-      <Route exact path="/pokemon/:pokemonName" component={Pokemon} />
+      <Route path="/pokemon/:pokemonName" component={Pokemon} />
       <Route render={() => <h1 className={classes.notFound}> Not Found</h1>} />
     </Switch>
   );
