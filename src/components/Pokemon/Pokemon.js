@@ -135,7 +135,6 @@ const Pokemon = (props) => {
       isMounted = false;
     };
   }, [urlPokemonAPI, urlPokemonSpeciesAPI]);
-  console.log(pokemon);
 
   return (
     <div className={classes.MainWrapper}>

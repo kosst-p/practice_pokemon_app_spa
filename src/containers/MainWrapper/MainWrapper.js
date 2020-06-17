@@ -17,7 +17,7 @@ const MainWrapper = (props) => {
   const [nextPage, setNextPage] = useState("");
   const [hasMore, setHasMore] = useState(false);
   /* ****** */
-  console.log(pokemons);
+
   /* Logic */
   const observer = useRef();
   const lastPokemonElementRef = useCallback(
@@ -65,20 +65,24 @@ const MainWrapper = (props) => {
   /* Render */
   return (
     <HashRouter basename="/">
-      <Route
-        exact
-        path="/"
-        render={(props) => (
-          <PokemonCardContainer
-            pokemons={pokemons}
-            loading={loading}
-            error={error}
-            lastPokemonElementRef={lastPokemonElementRef}
-          />
-        )}
-      />
-      <Route path="/pokemon/:pokemonName" component={Pokemon} />
-      <Route render={() => <h1 className={classes.notFound}> Not Found</h1>} />
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={(props) => (
+            <PokemonCardContainer
+              pokemons={pokemons}
+              loading={loading}
+              error={error}
+              lastPokemonElementRef={lastPokemonElementRef}
+            />
+          )}
+        />
+        <Route path="/pokemon/:pokemonName" component={Pokemon} />
+        <Route
+          render={() => <h1 className={classes.notFound}> Not Found</h1>}
+        />
+      </Switch>
     </HashRouter>
   );
   /* ***** */
