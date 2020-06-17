@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import PokemonCardContainer from "../../containers/PokemonCardContainer/PokemonCardContainer";
 import Pokemon from "../../components/Pokemon/Pokemon";
-import { Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import classes from "./MainWrapper.module.css";
 import Axios from "axios";
 // import logger from "react-logger";
@@ -17,7 +17,7 @@ const MainWrapper = (props) => {
   const [nextPage, setNextPage] = useState("");
   const [hasMore, setHasMore] = useState(false);
   /* ****** */
-
+  console.log(pokemons);
   /* Logic */
   const observer = useRef();
   const lastPokemonElementRef = useCallback(
@@ -64,7 +64,7 @@ const MainWrapper = (props) => {
 
   /* Render */
   return (
-    <Switch>
+    <HashRouter basename="/">
       <Route
         exact
         path="/"
@@ -79,7 +79,7 @@ const MainWrapper = (props) => {
       />
       <Route path="/pokemon/:pokemonName" component={Pokemon} />
       <Route render={() => <h1 className={classes.notFound}> Not Found</h1>} />
-    </Switch>
+    </HashRouter>
   );
   /* ***** */
 };
