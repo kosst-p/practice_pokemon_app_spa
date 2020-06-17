@@ -2,7 +2,7 @@
   "name": "pokemon-app-v2",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kosst-p.github.io/pokemons-app/",
+  "homepage": "https://kosst-p.github.io/practice_pokemon_app_spa/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
