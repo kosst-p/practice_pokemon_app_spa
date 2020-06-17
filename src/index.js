@@ -4,8 +4,6 @@ import ReactDOM from "react-dom";
 import App from "./components/App/App";
 import * as serviceWorker from "./serviceWorker";
 
-console.log("privet");
-
 ReactDOM.render(
   <React.StrictMode>
     <App />
