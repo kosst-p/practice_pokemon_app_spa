@@ -1,8 +1,5 @@
-.Title {
+.notFound {
   text-align: center;
-  margin-bottom: 40px;
-}
-.ErrorConnect {
   font-size: 20px;
   color: rgb(255, 187, 0);
 }
